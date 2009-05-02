@@ -168,7 +168,10 @@ namespace Smuxi.Frontend.Gnome
             TraceRemotingCall(chatModel);
 
             MethodBase mb = Trace.GetMethodBase();
-            Gtk.Application.Invoke(delegate {
+            // OPT: using GLib.Idle here as the sync operation will do lots of
+            // GUI updates, if we keep pumping that directly into the GTK+ loop
+            // the window will not refresh anymore till everything is finished
+            GLib.Idle.Add(delegate {
                 TraceRemotingCall(mb, chatModel);
 
                 try {
@@ -184,7 +187,7 @@ namespace Smuxi.Frontend.Gnome
                             )
                         );
 #endif
-                        return;
+                        return false;
                     }
 
 #if LOG4NET
@@ -194,7 +197,7 @@ namespace Smuxi.Frontend.Gnome
 #if LOG4NET
                     DateTime syncStop = DateTime.UtcNow;
                     double duration = syncStop.Subtract(syncStart).TotalMilliseconds;
-                    _Logger.Debug("SyncChat() done, syncing took: " + Math.Round(duration) + " ms");
+                    _Logger.Debug("SyncChat() <" + chatView.Name + "> syncing took: " + Math.Round(duration) + " ms");
 #endif
 
                     // maybe a BUG here? should be tell the FrontendManager before we sync?
@@ -202,18 +205,11 @@ namespace Smuxi.Frontend.Gnome
 
                     // BUG: doesn't work?!?
                     chatView.ScrollToEnd();
-
-                    /*
-                    // this hack is bad for local engine users, and doesn't really
-                    // make things better for remote engine users, so it stays disabled for now
-                    // BUG: clearing highlight here is a bad idea, highlight in
-                    // person chats for the first message go lost here!
-                    // no better way currently to fix this, see trac bug #50
-                    chatView.HasHighlight = false;
-                    */
                 } catch (Exception ex) {
                     Frontend.ShowException(ex);
                 }
+
+                return false;
             });
         }
         
