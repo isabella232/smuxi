@@ -264,7 +264,18 @@ namespace Smuxi.Frontend.Gnome
                 _LocalSession.RegisterFrontendUI(_MainWindow.UI);
             }
             _FrontendManager = _Session.GetFrontendManager(_MainWindow.UI);
-            _FrontendManager.Sync();
+            
+#if LOG4NET
+            DateTime syncStart = DateTime.UtcNow;
+#endif
+            //_FrontendManager.Sync();
+            _MainWindow.UI.SyncAllChats();
+#if LOG4NET
+            DateTime syncStop = DateTime.UtcNow;
+            double duration = syncStop.Subtract(syncStart).TotalSeconds;
+            //_Logger.Debug("ConnectEngineToGUI() : _FrontendManager.Sync() took: " + Math.Round(duration) + " seconds");
+            _Logger.Debug("ConnectEngineToGUI() : _MainWindow.UI.SyncAllChats() took: " + Math.Round(duration) + " seconds");
+#endif
             
             // MS .NET doesn't like this with Remoting?
             if (Type.GetType("Mono.Runtime") != null) {

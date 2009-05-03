@@ -51,7 +51,7 @@ namespace Smuxi.Frontend.Gnome
         private Notebook         _Notebook;
         private bool             _CaretMode;
         private ChatViewManager  _ChatViewManager;
-        private IFrontendUI      _UI;
+        private GnomeUI          _UI;
         private EngineManager    _EngineManager;
         private Gtk.ImageMenuItem _OpenChatMenuItem;
         private Gtk.MenuItem     _CloseChatMenuItem;
@@ -95,7 +95,7 @@ namespace Smuxi.Frontend.Gnome
             }
         }
         
-        public IFrontendUI UI {
+        public GnomeUI UI {
             get {
                 return _UI;
             }

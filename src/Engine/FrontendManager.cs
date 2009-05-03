@@ -96,6 +96,15 @@ namespace Smuxi.Engine
                 return !f_TaskQueue.Disposed;
             }
         }
+
+        public bool IsFrontendSynced {
+            get {
+                return _IsFrontendSynced;
+            }
+            set {
+                _IsFrontendSynced = value;
+            }
+        }
         
         public FrontendManager(Session session, IFrontendUI ui)
         {
@@ -117,6 +126,8 @@ namespace Smuxi.Engine
             // register event for config invalidation
             // BUG: when the frontend disconnects there are dangling methods registered!
             //_Session.Config.Changed += new EventHandler(_OnConfigChanged);
+
+            _CurrentChat = _Session.Chats[0];
         }
         
         ~FrontendManager()

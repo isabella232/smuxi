@@ -199,18 +199,41 @@ namespace Smuxi.Frontend.Gnome
                     double duration = syncStop.Subtract(syncStart).TotalMilliseconds;
                     _Logger.Debug("SyncChat() <" + chatView.Name + "> syncing took: " + Math.Round(duration) + " ms");
 #endif
+                    chatView.ScrollToEnd();
 
                     // maybe a BUG here? should be tell the FrontendManager before we sync?
                     Frontend.FrontendManager.AddSyncedChat(chatModel);
-
-                    // BUG: doesn't work?!?
-                    chatView.ScrollToEnd();
                 } catch (Exception ex) {
                     Frontend.ShowException(ex);
                 }
 
                 return false;
             });
+        }
+        
+        public void SyncAllChats()
+        {
+            Trace.Call();
+
+            lock (Frontend.Session.Chats) {
+                foreach (ChatModel chatModel in Frontend.Session.Chats) {
+                    _ChatViewManager.AddChat(chatModel);
+                    ChatView chatView = _ChatViewManager.GetChat(chatModel);
+#if LOG4NET
+                    DateTime syncStart = DateTime.UtcNow;
+#endif
+                    chatView.Sync();
+#if LOG4NET
+                    DateTime syncStop = DateTime.UtcNow;
+                    double duration = syncStop.Subtract(syncStart).TotalMilliseconds;
+                    _Logger.Debug("SyncChat() <" + chatView.Name + "> syncing took: " + Math.Round(duration) + " ms");
+#endif
+                    chatView.ScrollToEnd();
+
+                    Frontend.FrontendManager.AddSyncedChat(chatModel);
+                }
+                Frontend.FrontendManager.IsFrontendSynced = true;
+            }
         }
         
         public void AddPersonToGroupChat(GroupChatModel groupChat, PersonModel person)

@@ -99,6 +99,8 @@
     <File subtype="Directory" buildaction="Compile" name="." />
     <File subtype="Code" buildaction="Compile" name="ColorConverter.cs" />
     <File subtype="Code" buildaction="Compile" name="NetworkManager.cs" />
+    <File name="EngineConnectProgressDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="gtk-gui/Smuxi.Frontend.Gnome.EngineConnectProgressDialog.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Engine" />
