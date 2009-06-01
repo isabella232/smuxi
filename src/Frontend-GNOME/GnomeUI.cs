@@ -215,6 +215,8 @@ namespace Smuxi.Frontend.Gnome
         {
             Trace.Call();
 
+            // BUG: will the enumeration over remoting break if the collection
+            // changes? a lock() is not locking it on the server side for sure!
             lock (Frontend.Session.Chats) {
                 foreach (ChatModel chatModel in Frontend.Session.Chats) {
                     _ChatViewManager.AddChat(chatModel);

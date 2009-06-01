@@ -269,6 +269,8 @@ namespace Smuxi.Frontend.Gnome
             DateTime syncStart = DateTime.UtcNow;
 #endif
             //_FrontendManager.Sync();
+            // pull all chats instead of letting the frontend manager do a push
+            // which we can't track when it's finished
             _MainWindow.UI.SyncAllChats();
 #if LOG4NET
             DateTime syncStop = DateTime.UtcNow;
